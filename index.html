@@ -27,4 +27,40 @@
 <dialog class="pilot-sheet" id="pilot-sheet" aria-labelledby="pilot-title"><div class="sheet-grip"></div><div class="sheet-head"><h2 id="pilot-title">הצטרפות לפיילוט</h2><button class="sheet-close" type="button" aria-label="סגירת הטופס">×</button></div><form class="pilot-form"><p>כמה פרטים קצרים והמקום בפיילוט נשמר.</p><label class="field"><span>שם או כינוי</span><input name="nickname" autocomplete="nickname" required placeholder="איך לקרוא לך?"></label><label class="field"><span>אימייל</span><input type="email" name="email" autocomplete="email" inputmode="email" required placeholder="name@example.com" dir="ltr"></label><div class="sheet-note"><i>🛡</i><span>האימייל ישמש רק לעדכונים על הפיילוט.</span></div><button class="cta" type="submit">אישור הצטרפות לפיילוט</button></form></dialog>
 <div class="toast" role="status">המקום שלך בפיילוט נשמר ⚡</div>
 <script>(()=>{const sheet=document.getElementById('pilot-sheet');const close=sheet.querySelector('.sheet-close');const form=sheet.querySelector('form');document.querySelectorAll('.js-cta').forEach(button=>button.addEventListener('click',()=>sheet.showModal()));close.addEventListener('click',()=>sheet.close());sheet.addEventListener('click',event=>{if(event.target===sheet)sheet.close()});form.addEventListener('submit',event=>{event.preventDefault();sheet.close();const toast=document.querySelector('.toast');toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2600);form.reset()})})();</script>
-</body></html>
+ <script>
+      const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbziwtxe0QphLdDwHnFhQ1CdkGYBzwZdUGKo2k3AapAIn9oBTa_EN_UNBAZrGSppQoWDAQ/exec';
+      document.getElementById('waitlistForm').addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          const name = document.getElementById('name').value;
+          const email = document.getElementById('email').value;
+
+          // send info to Google Sheets
+          fetch(APPS_SCRIPT_URL, {
+              method: 'POST',
+              mode: 'no-cors',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name: name, email: email })
+          })
+          .then(() => {
+              // send conversion-event to Google Analytics
+              if (typeof gtag === 'function') {
+                  gtag('event', 'sign_up_waitlist', {
+                      'event_category': 'engagement',
+                      'event_label': 'Waitlist Form'
+                  });
+              }
+              
+              document.getElementById('statusMessage').innerText = 'תודה! נרשמת בהצלחה.';
+              document.getElementById('waitlistForm').reset();
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              document.getElementById('statusMessage').innerText = 'ארעה שגיאה, נסה שנית.';
+          });
+      });
+    </script>
+</body>
+</html>
+
+
