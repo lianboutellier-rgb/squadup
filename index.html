@@ -32,6 +32,7 @@
   const sheet = document.getElementById('pilot-sheet');
   const close = sheet.querySelector('.sheet-close');
   const form = sheet.querySelector('form');
+  const submitButton = form.querySelector('button[type="submit"]');
   document.querySelectorAll('.js-cta').forEach(button => button.addEventListener('click', () => sheet.showModal()));
   close.addEventListener('click', () => sheet.close());
   sheet.addEventListener('click', event => { if (event.target === sheet) sheet.close(); });
@@ -39,6 +40,8 @@
     event.preventDefault();
     const nickname = form.querySelector('[name="nickname"]').value;
     const email = form.querySelector('[name="email"]').value;
+    submitButton.disabled = true;
+    submitButton.textContent = 'שולח...';
     fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
@@ -55,6 +58,8 @@
     .catch(error => {
       console.error('Error:', error);
       alert('ארעה שגיאה, נסה שנית.');
+      submitButton.disabled = false;
+      submitButton.textContent = 'אישור הצטרפות לפיילוט';
     });
   });
 })();
