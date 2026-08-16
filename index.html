@@ -33,7 +33,8 @@
   const close = sheet.querySelector('.sheet-close');
   const form = sheet.querySelector('form');
   const submitButton = form.querySelector('button[type="submit"]');
-  document.querySelectorAll('.js-cta').forEach(button => button.addEventListener('click', () => sheet.showModal()));
+  const ctaButtons = document.querySelectorAll('.js-cta');
+  ctaButtons.forEach(button => button.addEventListener('click', () => sheet.showModal()));
   close.addEventListener('click', () => sheet.close());
   sheet.addEventListener('click', event => { if (event.target === sheet) sheet.close(); });
   form.addEventListener('submit', event => {
@@ -49,6 +50,11 @@
       body: JSON.stringify({ name: nickname, email: email })
     })
     .then(() => {
+      submitButton.textContent = '✓ נרשמת בהצלחה';
+      ctaButtons.forEach(button => {
+        button.disabled = true;
+        button.textContent = '✓ כבר נרשמת לפיילוט';
+      });
       sheet.close();
       const toast = document.querySelector('.toast');
       toast.classList.add('show');
